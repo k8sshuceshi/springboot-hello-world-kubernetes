@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CalculatorController {
         @RequestMapping("/")
         public String index() {
-                double val = 0.001
+                double val = 0.001;
                 for (i = 0; i < 1000000; i++) {
                         val += Math.sqrt(val);
                 }
