@@ -64,10 +64,10 @@ pipeline {
             steps {
                 scripts {
                     sleep (time: 5)
-                    def response = httpRequest {
+                    def response = httpRequest (
                         url: "http://$KUBERNETES_MASTER_IP:8081",
                         timeout: 30
-                    }
+                    )
                     if (response.status != 200) {
                         error("金丝雀冒烟测试失败！")
                     }
