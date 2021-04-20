@@ -3,6 +3,7 @@ pipeline {
     environment {
         // 定义 Docker 镜像名称，账号/镜像名
         DOCKER_IMAGE_NAME = "k8sshuceshi/springboot-hello-world-kubernetes"
+        CANARY_REPLICAS = 1
     }
     stages {
         stage('Build') {
@@ -77,18 +78,8 @@ pipeline {
             when {
                 branch 'master'
             }
-            // 金丝雀部署 0 个 Pod
-            environment {
-                CANARY_REPLICAS = 0
-            }
             steps {
-                input 'Deploy to Production?'
                 milestone(1)
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'springboot-hello-world-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
                 // 根据配置的 springboot-hello-world-kube.yml 模版来部署镜像至 Kubernetes
                 kubernetesDeploy(
                     kubeconfigId: 'kubeconfig',
@@ -96,6 +87,15 @@ pipeline {
                     enableConfigSubstitution: true
                 )
             }
+        }
+    }
+    post {
+        cleanup {
+            kubernetesDeploy(
+                kubeconfigId: 'kubeconfig',
+                configs: 'springboot-hello-world-kube-canary.yml',
+                enableConfigSubstitution: true
+            )
         }
     }
 }
