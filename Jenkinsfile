@@ -68,6 +68,7 @@ pipeline {
                         url: "http://$KUBERNETES_MASTER_IP:8081",
                         timeout: 60
                     )
+                    echo response.status
                     if (response.status != 200) {
                         error("金丝雀冒烟测试失败！")
                     }
