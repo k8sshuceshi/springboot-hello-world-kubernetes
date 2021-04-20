@@ -62,7 +62,7 @@ pipeline {
                 branch 'master'
             }
             steps {
-                scripts {
+                script {
                     sleep (time: 5)
                     def response = httpRequest (
                         url: "http://$KUBERNETES_MASTER_IP:8081",
