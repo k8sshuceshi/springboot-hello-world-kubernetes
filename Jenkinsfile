@@ -63,7 +63,7 @@ pipeline {
             }
             steps {
                 script {
-                    sleep (time: 20)
+                    sleep (time: 10)
                     def response = httpRequest (
                         url: "http://$KUBERNETES_MASTER_IP:8081",
                         timeout: 30
