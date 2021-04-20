@@ -66,7 +66,7 @@ pipeline {
                     sleep (time: 20)
                     def response = httpRequest (
                         url: "http://$KUBERNETES_MASTER_IP:8081",
-                        timeout: 60
+                        timeout: 30
                     )
                     echo response.status
                     if (response.status != 200) {
