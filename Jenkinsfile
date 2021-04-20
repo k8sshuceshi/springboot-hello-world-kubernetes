@@ -39,13 +39,39 @@ pipeline {
                 }
             }
         }
+        stage('CanaryDeploy') {
+            when {
+                branch 'master'
+            }
+            // 金丝雀部署 1 个 Pod
+            environment {
+                CANARY_REPLICAS = 1
+            }
+            steps {
+                // 根据配置的 springboot-hello-world-kube-canary.yml 模版来部署镜像至 Kubernetes
+                kubernetesDeploy(
+                    kubeconfigId: 'kubeconfig',
+                    configs: 'springboot-hello-world-kube-canary.yml',
+                    enableConfigSubstitution: true
+                )
+            }
+        }
         stage('DeployToProduction') {
             when {
                 branch 'master'
             }
+            // 金丝雀部署 0 个 Pod
+            environment {
+                CANARY_REPLICAS = 0
+            }
             steps {
                 input 'Deploy to Production?'
                 milestone(1)
+                kubernetesDeploy(
+                    kubeconfigId: 'kubeconfig',
+                    configs: 'springboot-hello-world-kube-canary.yml',
+                    enableConfigSubstitution: true
+                )
                 // 根据配置的 springboot-hello-world-kube.yml 模版来部署镜像至 Kubernetes
                 kubernetesDeploy(
                     kubeconfigId: 'kubeconfig',
